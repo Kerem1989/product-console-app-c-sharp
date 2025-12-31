@@ -38,11 +38,27 @@ public class Program
                     else
                     {
                         Console.Write("Enter Product Price: ");
-                        decimal price = decimal.Parse(Console.ReadLine());
-                        Console.Write("Enter Product Quantity: ");
-                        int quantity = int.Parse(Console.ReadLine());
-                        productService.AddProduct(name, price, quantity, products);
-                        Console.WriteLine("Product added successfully!");
+                        bool price = decimal.TryParse(Console.ReadLine(), out decimal parsedPrice);
+                        if (!price)
+                        {
+                            Console.WriteLine("Invalid price format. Product not added.");
+                            break;
+                        }
+                        else
+                        {
+                            Console.Write("Enter Product Quantity: ");
+                            bool quantity = int.TryParse(Console.ReadLine(), out int parsedQuantity);
+                            if (!quantity)
+                            {
+                                Console.WriteLine("Invalid quantity format. Product not added.");
+                                break;
+                            }
+                            else
+                            {
+                                productService.AddProduct(name, parsedPrice, parsedQuantity, products);
+                                Console.WriteLine("Product added successfully!");
+                            }
+                        }
                     }
                     break;
                 case "2":
@@ -64,11 +80,18 @@ public class Program
                         else
                         {
                             Console.Write("Enter new quantity: ");
-                            int newQuantity = int.Parse(Console.ReadLine());
-                            productService.UpdateStock(updateName, newQuantity, products);
-                            Console.WriteLine("Stock updated successfully!");
+                            bool validInput = int.TryParse(Console.ReadLine(), out int parsedQuantity);
+                            if (!validInput)
+                            {
+                                Console.WriteLine("Invalid quantity format. Stock not updated.");
+                                break;
+                            }
+                            else
+                            {
+                                productService.UpdateStock(updateName, parsedQuantity, products);
+                                Console.WriteLine("Stock updated successfully!");
+                            }
                         }
-
                     }
                     break;
                 case "3":
@@ -108,6 +131,9 @@ public class Program
                 case "5":
                     runProgram = false;
                     Console.WriteLine("Exiting the program. Goodbye!");
+                    break;
+                default:
+                    Console.WriteLine("Invalid option. Please try again.");
                     break;
             }
         }
